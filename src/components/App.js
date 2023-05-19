@@ -1,15 +1,23 @@
 import '../index.css';
-import Header from './Header';
-import Main from './Main';
-import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup';
-import api from '../utils/api';
+
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+
+import api from '../utils/api';
+
+import Main from './Main';
+import PopupWithForm from './PopupWithForm';
+import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import InfoToolTip from './InfoToolTip';
+import Login from './Login';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
+import Header from './Header';
+
 
 
 function App() {
@@ -17,7 +25,15 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isToolTipInfo, setIsToolTipInfo] = useState({isOpen: false, imgPath: '', text: ''});
   const [selectedCard, setSelectedCard] = useState({isOpen: false, link: '', place: ''});
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+
+  function handleLogin() {
+    setLoggedIn(!loggedIn);
+  };
 
   const [cards, setCards] = useState([]);
   useEffect(() => {
@@ -86,21 +102,25 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsToolTipInfo({...isToolTipInfo, isOpen: false});
     setSelectedCard({isOpen: false, link: '', place: ''});
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div>
-        <Header />
-        <Main cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} onCardClick={handleCardClick} onEditAvatar={handleEditAvatarClick} onAddPlace={handleAddPlaceClick} onEditProfile={handleEditProfileClick} />
-        <Footer />
+        <Routes>
+          <Route path="/" element={<ProtectedRoute userEmail={userEmail} element={Main} handleLogin={handleLogin} loggedIn={loggedIn} cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} onCardClick={handleCardClick} onEditAvatar={handleEditAvatarClick} onAddPlace={handleAddPlaceClick} onEditProfile={handleEditProfileClick} />} />
+          <Route path="/sign-in" element={<><Header pathName="../sign-up">Регистрация</Header><Login setUserEmail={setUserEmail} setIsToolTipInfo={setIsToolTipInfo} handleLogin={handleLogin}/></>}/>
+          <Route path="/sign-up" element={<><Header pathName="../sign-in">Войти</Header><Register setIsToolTipInfo={setIsToolTipInfo} /></>}/>
+        </Routes>
         <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
         <AddPlacePopup onAddCard={handleAddPlaceSubmit} onClose={closeAllPopups} isOpen={isAddPlacePopupOpen}/>
         <ImagePopup onClose={closeAllPopups} card={selectedCard} />
         <PopupWithForm buttonText='Да' title="Вы уверены?" name="delete">
         </PopupWithForm>
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
+        <InfoToolTip isToolTipInfo={isToolTipInfo} onClose={closeAllPopups} />
       </div>
     </CurrentUserContext.Provider>
   )

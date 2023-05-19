@@ -19,7 +19,7 @@ function PopupWithForm(props) {
           </button>
           </form>
         </div>
-      </div>
+    </div>
   );
 };
 export default PopupWithForm;
