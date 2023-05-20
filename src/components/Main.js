@@ -6,10 +6,9 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Main(props) {
   const userInfo = useContext(CurrentUserContext);
-
   return (
     <>
-      <main className="main">
+      <main ref={props.mainRef} className="main">
         <section className="profile page__profile">
           <button onClick={props.onEditAvatar} className="avatar-btn" type="button">
             <img src={userInfo.avatar} alt="аватарка профиля" className="profile__img avatar" />
@@ -43,4 +42,5 @@ function Main(props) {
     </>
   );
 };
+
 export default Main;

@@ -1,6 +1,6 @@
-function Footer() {
+function Footer(props) {
   return (
-    <footer className="footer page__footer">
+    <footer ref={props.footerRef} className="footer page__footer">
       <p className="footer__text">
         &copy;&nbsp;{(new Date).getFullYear()} Mesto Russia
       </p>

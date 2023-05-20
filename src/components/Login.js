@@ -1,23 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import authApi from '../utils/auth';
-import toolTipErr from '../images/tooltip-err.svg';
 
-export default function Login({handleLogin, setIsToolTipInfo, setUserEmail}) {
+
+export default function Login({ apiToken, apiLogin }) {
   const [formValue, setFormValue] = useState({email: '', password: ''});
   const {email, password} = formValue;
-  const navigate = useNavigate();
 
   const tokenCheck = () => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      authApi.checkToken(jwt)
-        .then((data) => {
-          handleLogin();
-          navigate("/");
-          setUserEmail(data.data.email);
-        })
-        .catch(err => console.log(err));
+      apiToken(jwt);
     }
   }
 
@@ -28,19 +19,7 @@ export default function Login({handleLogin, setIsToolTipInfo, setUserEmail}) {
   const handleSubmit = (evt) => {
     evt.preventDefault();
     const {email, password} = formValue;
-    authApi.login({email, password})
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('jwt', data.token);
-          handleLogin();
-          navigate("/");
-          setUserEmail(email);
-        }
-        })
-      .catch((err) => {
-        console.log(err);
-        setIsToolTipInfo({isOpen: true, imgPath: toolTipErr, text: 'Что-то пошло не так! Попробуйте ещё раз.'});
-      });
+    apiLogin({email, password});
   };
 
   return (

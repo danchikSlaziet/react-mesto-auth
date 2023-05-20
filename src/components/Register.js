@@ -1,25 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import authApi from '../utils/auth';
-import toolTipOk from '../images/tooltip-ok.svg';
-import toolTipErr from '../images/tooltip-err.svg';
+import { Link } from 'react-router-dom';
 
 export default function Register(props) {
   const [formValue, setFormValue] = useState({email: '', password: ''});
   const {email, password} = formValue;
-  const navigate = useNavigate();
   const handleSubmit = (evt) => {
     evt.preventDefault();
     const {email, password} = formValue;
-    authApi.register({email, password})
-      .then((data) => {
-        navigate('/sign-in');
-        props.setIsToolTipInfo({isOpen: true, imgPath: toolTipOk, text: 'Вы успешно зарегистрировались!'});
-      })
-      .catch((err) => {
-        console.log(err);
-        props.setIsToolTipInfo({isOpen: true, imgPath: toolTipErr, text: 'Что-то пошло не так! Попробуйте ещё раз.'});
-      });
+    props.apiRegister({email, password});
   };
 
   return (
