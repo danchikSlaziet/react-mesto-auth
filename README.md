@@ -8,3 +8,7 @@
 **Технологии**
 
 При создании сайта использовались возможности HTML & CSS & React. В будущем планируется подтянуть бэк.
+
+**GH-Pages**
+
+https://danchikslaziet.github.io/react-mesto-auth/
